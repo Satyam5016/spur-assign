@@ -7,7 +7,12 @@ import { prisma } from "./lib/prisma.js";
 
 const app = express();
 const port = Number(process.env.PORT) || 4000;
-const host = process.env.HOST ?? (process.env.NODE_ENV === "production" ? "0.0.0.0" : "127.0.0.1");
+const configuredHost = process.env.HOST;
+const isProduction = process.env.NODE_ENV === "production";
+const host =
+  isProduction && (!configuredHost || configuredHost === "127.0.0.1" || configuredHost === "localhost")
+    ? "0.0.0.0"
+    : configuredHost ?? "127.0.0.1";
 
 app.use(
   cors({
